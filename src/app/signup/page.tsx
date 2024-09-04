@@ -25,7 +25,7 @@ const Page = () => {
     }
 
     try {
-      const response = await fetch('lifeplus-back:4000/auth/signup', {
+      const response = await fetch('http://lifeplus-back:4000/auth/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
