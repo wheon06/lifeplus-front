@@ -11,7 +11,7 @@ export default async function fetcher(
   const refreshToken = localStorage.getItem('refreshToken');
 
   if (!accessToken || !refreshToken) {
-    window.location.href = '/auth/signin';
+    window.location.href = '/signin';
     return;
   }
 
@@ -49,7 +49,7 @@ export default async function fetcher(
         body: method !== 'GET' ? JSON.stringify(data) : undefined,
       });
     } else {
-      window.location.href = '/auth/signin';
+      window.location.href = '/signin';
       return;
     }
   }

@@ -62,7 +62,7 @@ const Page = () => {
             name='username'
             placeholder='아이디'
             required
-            className='rounded-lg'
+            className='rounded-lg border-2 p-2'
             value={formData.username}
             onChange={handleChange}
           />
@@ -71,7 +71,7 @@ const Page = () => {
             name='password'
             placeholder='비밀번호'
             required
-            className='rounded-lg'
+            className='rounded-lg border-2 p-2'
             value={formData.password}
             onChange={handleChange}
           />
@@ -80,7 +80,7 @@ const Page = () => {
             name='confirmPassword'
             placeholder='비밀번호 확인'
             required
-            className='rounded-lg'
+            className='rounded-lg border-2 p-2'
             value={formData.confirmPassword}
             onChange={handleChange}
           />
