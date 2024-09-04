@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import { Akshar } from 'next/font/google';
 import { useEffect, useState } from 'react';
 import NameTag from './components/name-tag';
@@ -26,12 +25,14 @@ export default function Home() {
   } | null>(null);
 
   const [health, setHealth] = useState<number[]>([]);
-
-  const [heartRateList, setHeartRateList] = useState<any[]>([]);
-  const [temperatureList, setTemperatureList] = useState<any[]>([]);
-  const [oxygenSaturationList, setOxygenSaturationList] = useState<any[]>([]);
-  const [stressList, setStressList] = useState<any[]>([]);
-  const [dateList, setDateList] = useState<any[]>([]);
+  const [heartRateList, setHeartRateList] = useState<number[]>([]);
+  const [temperatureList, setTemperatureList] = useState<number[]>([]);
+  const [oxygenSaturationList, setOxygenSaturationList] = useState<number[]>(
+    [],
+  );
+  const [stressList, setStressList] = useState<number[]>([]);
+  const [dateList, setDateList] = useState<Date[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -65,25 +66,31 @@ export default function Home() {
         let response = await fetcher('/health/history/' + user.id);
         const historyData: any = await response?.json();
 
-        setHeartRateList(
-          historyData.map((item: any) => new Date(item.heartRate)),
-        );
-        setTemperatureList(
-          historyData.map((item: any) => new Date(item.temperature)),
-        );
+        setHeartRateList(historyData.map((item: any) => item.heartRate));
+        setTemperatureList(historyData.map((item: any) => item.temperature));
         setOxygenSaturationList(
-          historyData.map((item: any) => new Date(item.oxygenSaturation)),
+          historyData.map((item: any) => item.oxygenSaturation),
         );
-        setStressList(historyData.map((item: any) => new Date(item.stress)));
+        setStressList(historyData.map((item: any) => item.stress));
         setDateList(historyData.map((item: any) => new Date(item.updatedAt)));
       } catch (error) {
         console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
     initializeData();
     initializeHistory();
   }, []);
+
+  if (loading) {
+    return (
+      <div className='flex min-h-screen items-center justify-center bg-slate-200'>
+        <div>로딩 중...</div>
+      </div>
+    );
+  }
 
   return (
     <div className='min-h-screen bg-slate-200'>
