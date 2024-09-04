@@ -40,7 +40,7 @@ export default async function fetcher(
       const refreshData = await refreshResponse.json();
       localStorage.setItem('accessToken', refreshData.accessToken);
 
-      response = await fetch('http://localhost:4000' + url, {
+      response = await fetch('lifeplus-back:4000' + url, {
         method: method,
         headers: {
           'Content-Type': 'application/json',

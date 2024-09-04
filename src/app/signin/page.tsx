@@ -23,7 +23,7 @@ export default function Signin() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const response = await fetch('http://localhost:4000/auth/signin', {
+    const response = await fetch('lifeplus-back:4000/auth/signin', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
