@@ -1,6 +1,24 @@
 import React, { useState } from 'react';
 
-const UserDetailModal = ({ isOpen, onClose, onSubmit }) => {
+type SubmitHandler = (formData: FormData) => void;
+
+interface FormData {
+  name: string;
+  height: string;
+  weight: string;
+  email: string;
+  mobile: string;
+}
+
+const UserDetailModal = ({
+  isOpen,
+  onClose,
+  onSubmit,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: SubmitHandler;
+}) => {
   const [formData, setFormData] = useState({
     name: '',
     height: '',

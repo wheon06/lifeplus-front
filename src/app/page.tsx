@@ -99,9 +99,9 @@ export default function Home() {
         <div className='p-10'>
           <div>
             <NameTag
-              name={user?.name}
-              height={user?.height}
-              weight={user?.weight}
+              name={user?.name ?? ''}
+              height={user?.height ?? 0}
+              weight={user?.weight ?? 0}
             />
             <div className='mt-4 flex h-[560px] w-full rounded-3xl bg-gray-100 py-3'>
               <div className='flex h-full w-full flex-col gap-1'>
@@ -112,7 +112,7 @@ export default function Home() {
                       name={o.name}
                       img={o.img}
                       type={o.type}
-                      data={health[index]}
+                      data={health[index].toString()}
                     />
                   ))}
                 </div>
@@ -123,7 +123,7 @@ export default function Home() {
                       name={o.name}
                       img={o.img}
                       type={o.type}
-                      data={health[index + 2]}
+                      data={health[index + 2].toString()}
                     />
                   ))}
                 </div>

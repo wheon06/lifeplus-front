@@ -53,7 +53,7 @@ export default function Signin() {
     }
   };
 
-  const handleModalSubmit = async (detailData) => {
+  const handleModalSubmit = async (detailData: any) => {
     try {
       let response = await fetcher('/authenticate');
       const user = await response?.json();

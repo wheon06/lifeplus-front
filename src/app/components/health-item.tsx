@@ -1,6 +1,16 @@
 import Image from 'next/image';
 
-const HealthItem = ({ name, img, type, data }) => {
+const HealthItem = ({
+  name,
+  img,
+  type,
+  data,
+}: {
+  name: string;
+  img: string;
+  type: string;
+  data: string | null | undefined;
+}) => {
   return (
     <div className='mx-3 h-full w-full rounded-lg bg-gray-200 p-5'>
       <div className='flex'>
