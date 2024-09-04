@@ -24,13 +24,6 @@ export default function Home() {
     weight: number;
   } | null>(null);
 
-  const [healtsh, sestHealth] = useState<{
-    heartRate: number;
-    temperature: number;
-    oxygenSaturation: number;
-    stress: number;
-  } | null>(null);
-
   const [health, setHealth] = useState<number[]>([]);
 
   useEffect(() => {
@@ -42,15 +35,16 @@ export default function Home() {
     const initializeData = async () => {
       try {
         const user = await fetchData();
-        console.log(user);
-        setUser({ name: user.username, height: 166, weight: 50 });
+        let response = await fetcher('/user/detail/' + user.id);
+        const detail: any = await response?.json();
+        setUser({
+          name: detail?.name,
+          height: detail?.height,
+          weight: detail?.weight,
+        });
 
-        const healthData = {
-          heartRate: 1,
-          temperature: 2,
-          oxygenSaturation: 3,
-          stress: 4,
-        };
+        response = await fetcher('/health/' + user.id);
+        const healthData: any = await response?.json();
 
         setHealth(Object.values(healthData));
       } catch (error) {
