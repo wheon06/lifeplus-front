@@ -7,14 +7,15 @@ import NameTag from './components/name-tag';
 import NavBar from './components/nav-bar';
 import HealthItem from './components/health-item';
 import fetcher from './util/fetcher';
+import Chart from './components/chart';
 
 const akshar = Akshar({ subsets: ['latin'] });
 
 const healthImage = [
-  { name: '심박수', img: '/heart-rate.png' },
-  { name: '체온', img: '/temperature.png' },
-  { name: '산소포화도', img: '/oxygen-saturation.png' },
-  { name: '스트레스', img: '/stress.png' },
+  { name: '심박수', img: '/heart-rate.png', type: 'bpm' },
+  { name: '체온', img: '/temperature.png', type: 'ºC' },
+  { name: '산소포화도', img: '/oxygen-saturation.png', type: '%' },
+  { name: '스트레스', img: '/stress.png', type: '' },
 ];
 
 export default function Home() {
@@ -25,6 +26,12 @@ export default function Home() {
   } | null>(null);
 
   const [health, setHealth] = useState<number[]>([]);
+
+  const [heartRateList, setHeartRateList] = useState<any[]>([]);
+  const [temperatureList, setTemperatureList] = useState<any[]>([]);
+  const [oxygenSaturationList, setOxygenSaturationList] = useState<any[]>([]);
+  const [stressList, setStressList] = useState<any[]>([]);
+  const [dateList, setDateList] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,7 +59,30 @@ export default function Home() {
       }
     };
 
+    const initializeHistory = async () => {
+      try {
+        const user = await fetchData();
+        let response = await fetcher('/health/history/' + user.id);
+        const historyData: any = await response?.json();
+
+        setHeartRateList(
+          historyData.map((item: any) => new Date(item.heartRate)),
+        );
+        setTemperatureList(
+          historyData.map((item: any) => new Date(item.temperature)),
+        );
+        setOxygenSaturationList(
+          historyData.map((item: any) => new Date(item.oxygenSaturation)),
+        );
+        setStressList(historyData.map((item: any) => new Date(item.stress)));
+        setDateList(historyData.map((item: any) => new Date(item.updatedAt)));
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
     initializeData();
+    initializeHistory();
   }, []);
 
   return (
@@ -74,6 +104,7 @@ export default function Home() {
                       key={index}
                       name={o.name}
                       img={o.img}
+                      type={o.type}
                       data={health[index]}
                     />
                   ))}
@@ -84,12 +115,26 @@ export default function Home() {
                       key={index}
                       name={o.name}
                       img={o.img}
+                      type={o.type}
                       data={health[index + 2]}
                     />
                   ))}
                 </div>
               </div>
-              <div className='h-full w-full'></div>
+              <div className='flex h-full w-full flex-col'>
+                <div className='w-[540px] flex-1 p-1'>
+                  <div className='h-full w-full rounded-lg bg-gray-200'></div>
+                </div>
+                <div className='h-fit w-[540px]'>
+                  <Chart
+                    heartRateList={heartRateList}
+                    temperatureList={temperatureList}
+                    oxygenSaturationList={oxygenSaturationList}
+                    stressList={stressList}
+                    dateList={dateList}
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>
