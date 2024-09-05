@@ -15,18 +15,21 @@ export default async function fetcher(
     return;
   }
 
-  let response = await fetch('http://localhost:4000' + url, {
-    method: method,
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${accessToken}`,
+  let response = await fetch(
+    'https://port-0-lifeplus-back-m0nionbm8422b973.sel4.cloudtype.app' + url,
+    {
+      method: method,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: method !== 'GET' ? JSON.stringify(data) : undefined,
     },
-    body: method !== 'GET' ? JSON.stringify(data) : undefined,
-  });
+  );
 
   if (response.status === 401) {
     const refreshResponse = await fetch(
-      'http://localhost:4000/refreshAccessToken',
+      'https://port-0-lifeplus-back-m0nionbm8422b973.sel4.cloudtype.app/refreshAccessToken',
       {
         method: 'POST',
         headers: {
