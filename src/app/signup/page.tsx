@@ -25,16 +25,19 @@ const Page = () => {
     }
 
     try {
-      const response = await fetch('http://lifeplus-back:4000/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        'https://port-0-lifeplus-back-m0nionbm8422b973.sel4.cloudtype.app/auth/signup',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username: formData.username,
+            password: formData.password,
+          }),
         },
-        body: JSON.stringify({
-          username: formData.username,
-          password: formData.password,
-        }),
-      });
+      );
 
       if (response.ok) {
         window.location.href = 'signin';

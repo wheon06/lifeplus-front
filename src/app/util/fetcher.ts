@@ -40,14 +40,18 @@ export default async function fetcher(
       const refreshData = await refreshResponse.json();
       localStorage.setItem('accessToken', refreshData.accessToken);
 
-      response = await fetch('http://lifeplus-back:4000' + url, {
-        method: method,
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${refreshData.accessToken}`,
+      response = await fetch(
+        'https://port-0-lifeplus-back-m0nionbm8422b973.sel4.cloudtype.app' +
+          url,
+        {
+          method: method,
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${refreshData.accessToken}`,
+          },
+          body: method !== 'GET' ? JSON.stringify(data) : undefined,
         },
-        body: method !== 'GET' ? JSON.stringify(data) : undefined,
-      });
+      );
     } else {
       window.location.href = '/signin';
       return;
