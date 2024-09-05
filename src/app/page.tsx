@@ -1,7 +1,7 @@
 'use client';
 
 import { Akshar } from 'next/font/google';
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import NameTag from './components/name-tag';
 import NavBar from './components/nav-bar';
 import HealthItem from './components/health-item';
@@ -34,7 +34,7 @@ export default function Home() {
   const [dateList, setDateList] = useState<Date[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const fetchData = async () => {
       const response = await fetcher('/authenticate');
       return await response?.json();
@@ -106,14 +106,16 @@ export default function Home() {
             <div className='mt-4 flex h-[560px] w-full rounded-3xl bg-gray-100 py-3'>
               <div className='flex h-full w-full flex-col gap-1'>
                 <div className='flex h-full w-full py-1'>
-                  {healthImage.slice(2, 4).map((o, index) => (
+                  {healthImage.slice(0, 2).map((o, index) => (
                     <HealthItem
                       key={index}
                       name={o.name}
                       img={o.img}
                       type={o.type}
                       data={
-                        health[index + 2] ? health[index + 2].toString() : 'N/A'
+                        health[index] !== undefined
+                          ? health[index].toString()
+                          : 'N/A'
                       }
                     />
                   ))}
@@ -125,7 +127,11 @@ export default function Home() {
                       name={o.name}
                       img={o.img}
                       type={o.type}
-                      data={health[index + 2].toString()}
+                      data={
+                        health[index + 2] !== undefined
+                          ? health[index + 2].toString()
+                          : 'N/A'
+                      }
                     />
                   ))}
                 </div>

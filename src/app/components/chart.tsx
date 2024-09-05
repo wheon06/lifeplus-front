@@ -36,32 +36,42 @@ const Chart: React.FC<ChartProps> = ({
   stressList,
   dateList,
 }) => {
+  const safeHeartRateList = heartRateList.map((item) => item ?? 0);
+  const safeTemperatureList = temperatureList.map((item) => item ?? 0);
+  const safeOxygenSaturationList = oxygenSaturationList.map(
+    (item) => item ?? 0,
+  );
+  const safeStressList = stressList.map((item) => item ?? 0);
+  const safeDateList = dateList.map((date) =>
+    date ? date.toLocaleDateString() : 'Invalid Date',
+  );
+
   const data = {
-    labels: dateList.map((date) => date.toLocaleDateString()),
+    labels: safeDateList,
     datasets: [
       {
         label: '심박수',
         backgroundColor: 'rgba(209,0,0,0.2)',
         borderColor: 'rgba(209,0,0,1)',
-        data: heartRateList,
+        data: safeHeartRateList,
       },
       {
         label: '산소포화도',
         backgroundColor: 'rgba(0, 125, 209,0.2)',
         borderColor: 'rgba(0, 125, 209,1)',
-        data: oxygenSaturationList,
+        data: safeOxygenSaturationList,
       },
       {
         label: '체온',
         backgroundColor: 'rgba(37, 186, 0,0.2)',
         borderColor: 'rgba(37, 186, 0,1)',
-        data: temperatureList,
+        data: safeTemperatureList,
       },
       {
         label: '스트레스',
         backgroundColor: 'rgba(255, 206, 86, 0.2)',
         borderColor: 'rgba(255, 206, 86, 1)',
-        data: stressList,
+        data: safeStressList,
       },
     ],
   };

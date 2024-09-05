@@ -20,7 +20,7 @@ export default function Signin() {
     });
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const response = await fetch(
@@ -34,25 +34,39 @@ export default function Signin() {
       },
     );
 
+    const parseJSON = async (response: Response) => {
+      const text = await response.text();
+      return text ? JSON.parse(text) : {};
+    };
+
     if (response.ok) {
-      const data = await response.json();
+      const data = await parseJSON(response);
       localStorage.setItem('accessToken', data.accessToken);
       localStorage.setItem('refreshToken', data.refreshToken);
       try {
         let response = await fetcher('/authenticate');
-        const user = await response?.json();
-        response = await fetcher('/user/detail/' + user.id);
-        const detail = await response?.json();
-        if (detail) {
-          window.location.href = '/';
+        if (response && response.ok) {
+          const user = await parseJSON(response);
+          response = await fetcher('/user/detail/' + user.id);
+          if (response && response.ok) {
+            const detail = await parseJSON(response);
+            console.log(detail);
+            if (Object.keys(detail).length !== 0) {
+              window.location.href = '/';
+            } else {
+              setIsModalOpen(true);
+            }
+          } else {
+            console.error('Error fetching user details');
+          }
         } else {
-          setIsModalOpen(true);
+          console.error('Error: User not authenticated');
         }
       } catch (error) {
         console.error('Error fetching data:', error);
       }
-    } else if (response.status === 401) {
-      alert('아이디 또는 비밀번호가 잘못되었습니다.');
+    } else {
+      console.error('Error: ', response.statusText);
     }
   };
 
