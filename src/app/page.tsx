@@ -54,7 +54,12 @@ export default function Home() {
         response = await fetcher('/health/' + user.id);
         const healthData: any = await response?.json();
 
-        setHealth(Object.values(healthData));
+        setHealth([
+          healthData.heartRate,
+          healthData.temperature,
+          healthData.temperature,
+          healthData.oxygenSaturation,
+        ]);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
