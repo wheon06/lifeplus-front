@@ -106,13 +106,15 @@ export default function Home() {
             <div className='mt-4 flex h-[560px] w-full rounded-3xl bg-gray-100 py-3'>
               <div className='flex h-full w-full flex-col gap-1'>
                 <div className='flex h-full w-full py-1'>
-                  {healthImage.slice(0, 2).map((o, index) => (
+                  {healthImage.slice(2, 4).map((o, index) => (
                     <HealthItem
                       key={index}
                       name={o.name}
                       img={o.img}
                       type={o.type}
-                      data={health[index].toString()}
+                      data={
+                        health[index + 2] ? health[index + 2].toString() : 'N/A'
+                      }
                     />
                   ))}
                 </div>
