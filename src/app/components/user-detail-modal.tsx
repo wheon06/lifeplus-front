@@ -4,6 +4,7 @@ type SubmitHandler = (formData: FormData) => void;
 
 interface FormData {
   name: string;
+  birthday: string;
   height: string;
   weight: string;
   email: string;
@@ -21,6 +22,7 @@ const UserDetailModal = ({
 }) => {
   const [formData, setFormData] = useState({
     name: '',
+    birthday: '',
     height: '',
     weight: '',
     email: '',
@@ -53,6 +55,17 @@ const UserDetailModal = ({
               type='text'
               name='name'
               value={formData.name}
+              onChange={handleChange}
+              className='mb-4 w-full rounded border p-2'
+              required
+            />
+          </div>
+          <div>
+            <label className='mb-2 block'>생년월일</label>
+            <input
+              type='date'
+              name='birthday'
+              value={formData.birthday}
               onChange={handleChange}
               className='mb-4 w-full rounded border p-2'
               required
