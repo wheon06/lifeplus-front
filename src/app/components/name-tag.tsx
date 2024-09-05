@@ -19,7 +19,7 @@ const NameTag = ({
       </div>
       <div className='flex flex-col p-3'>
         <span className='text-[30px]'>{name}</span>
-        <span>{height + 'kg' + '/' + weight + 'kg'}</span>
+        <span>{height + 'cm' + '/' + weight + 'kg'}</span>
       </div>
     </div>
   );
