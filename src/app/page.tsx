@@ -33,6 +33,13 @@ export default function Home() {
   const [stressList, setStressList] = useState<number[]>([]);
   const [dateList, setDateList] = useState<Date[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [medicineList, setMedicineList] = useState<
+    { name: string; isChecked: boolean }[]
+  >([
+    { name: '등록된 약이 없습니다', isChecked: false },
+    { name: '등록된 약이 없습니다', isChecked: false },
+    { name: '등록된 약이 없습니다', isChecked: false },
+  ]);
 
   useLayoutEffect(() => {
     const fetchData = async () => {
@@ -53,13 +60,40 @@ export default function Home() {
 
         response = await fetcher('/health/' + user.id);
         const healthData: any = await response?.json();
-        console.log(healthData);
 
         setHealth([
           healthData.heartRate,
           healthData.temperature,
           healthData.oxygenSaturation,
           healthData.stress,
+        ]);
+
+        const today = new Date();
+        const date =
+          today.getFullYear() +
+          '-' +
+          (today.getMonth() + 1 < 10
+            ? '0' + (today.getMonth() + 1)
+            : today.getMonth() + 1) +
+          '-' +
+          (today.getDate() < 10 ? '0' + today.getDate() : today.getDate());
+
+        response = await fetcher('/medicine/' + user.id + '?date=' + date);
+        const medicineDate: any = await response?.json();
+
+        setMedicineList([
+          {
+            name: medicineDate.breakfast,
+            isChecked: medicineDate.checkedBreakfast,
+          },
+          {
+            name: medicineDate.lunch,
+            isChecked: medicineDate.checkedLunch,
+          },
+          {
+            name: medicineDate.dinner,
+            isChecked: medicineDate.checkedDinner,
+          },
         ]);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -97,6 +131,17 @@ export default function Home() {
       </div>
     );
   }
+
+  const handleCheckBoxChange = (index: number) => {
+    const updatedMedicineList = medicineList.map((medicine, i) => {
+      if (i === index) {
+        return { ...medicine, isChecked: !medicine.isChecked };
+      }
+      return medicine;
+    });
+    setMedicineList(updatedMedicineList);
+    //todo 백엔드 호출 db반영, 약 정보 저장 하기
+  };
 
   return (
     <div className='min-h-screen bg-slate-200'>
@@ -144,7 +189,35 @@ export default function Home() {
               </div>
               <div className='flex h-full w-full flex-col'>
                 <div className='w-[540px] flex-1 p-1'>
-                  <div className='h-full w-full rounded-lg bg-gray-200'></div>
+                  <div className='flex h-[258px] w-full flex-col gap-2 rounded-lg bg-gray-200 p-2'>
+                    {medicineList.map((medicine, index) => {
+                      return (
+                        <a
+                          key={index}
+                          href={''}
+                          className='flex h-[75px] w-full'
+                        >
+                          <div className='flex h-full items-center p-2'>
+                            <input
+                              className='h-[75px] w-[75px]'
+                              type={'checkbox'}
+                              checked={medicine.isChecked}
+                              onChange={() => handleCheckBoxChange(index)}
+                            />
+                          </div>
+                          <div className='h-full flex-1 rounded-lg bg-gray-100 p-2'>
+                            <h1
+                              className={
+                                'flex h-full w-full items-center overflow-hidden text-ellipsis whitespace-nowrap text-4xl'
+                              }
+                            >
+                              {medicine.name}
+                            </h1>
+                          </div>
+                        </a>
+                      );
+                    })}
+                  </div>
                 </div>
                 <div className='h-fit w-[540px]'>
                   <Chart
