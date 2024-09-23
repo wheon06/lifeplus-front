@@ -7,6 +7,7 @@ import NavBar from './components/nav-bar';
 import HealthItem from './components/health-item';
 import fetcher from './util/fetcher';
 import Chart from './components/chart';
+import dateFormatter from '@/app/util/dateFormatter';
 
 const akshar = Akshar({ subsets: ['latin'] });
 
@@ -68,15 +69,7 @@ export default function Home() {
           healthData.stress,
         ]);
 
-        const today = new Date();
-        const date =
-          today.getFullYear() +
-          '-' +
-          (today.getMonth() + 1 < 10
-            ? '0' + (today.getMonth() + 1)
-            : today.getMonth() + 1) +
-          '-' +
-          (today.getDate() < 10 ? '0' + today.getDate() : today.getDate());
+        const date = dateFormatter(new Date());
 
         response = await fetcher('/medicine/' + user.id + '?date=' + date);
         const medicineDate: any = await response?.json();
@@ -120,8 +113,25 @@ export default function Home() {
       }
     };
 
+    const initializeMedicine = async () => {
+      const user = await fetchData();
+      let response = await fetcher(
+        '/medicine/' + user.id + '?date=' + dateFormatter(new Date()),
+      );
+      const medicineData: any = await response?.json();
+      setMedicineList([
+        {
+          name: medicineData.breakfast,
+          isChecked: medicineData.checkedBreakfast,
+        },
+        { name: medicineData.lunch, isChecked: medicineData.checkedLunch },
+        { name: medicineData.dinner, isChecked: medicineData.checkedDinner },
+      ]);
+    };
+
     initializeData();
     initializeHistory();
+    initializeMedicine();
   }, []);
 
   if (loading) {
@@ -132,15 +142,34 @@ export default function Home() {
     );
   }
 
-  const handleCheckBoxChange = (index: number) => {
+  const handleCheckBoxChange = async (index: number) => {
+    const fetchData = async () => {
+      const response = await fetcher('/authenticate');
+      return await response?.json();
+    };
+
+    const user = await fetchData();
+
     const updatedMedicineList = medicineList.map((medicine, i) => {
       if (i === index) {
+        if (medicine.name === '등록된 약이 없습니다') return medicine;
         return { ...medicine, isChecked: !medicine.isChecked };
       }
       return medicine;
     });
     setMedicineList(updatedMedicineList);
-    //todo 백엔드 호출 db반영, 약 정보 저장 하기
+    await fetcher(
+      '/medicine/' +
+        user.id +
+        '?index=' +
+        index +
+        '&value=' +
+        !medicineList[index].isChecked +
+        '&date=' +
+        dateFormatter(new Date()),
+      'PATCH',
+    );
+    //todo 약 정보 저장 하기
   };
 
   return (
@@ -200,17 +229,13 @@ export default function Home() {
                           <div className='flex h-full items-center p-2'>
                             <input
                               className='h-[75px] w-[75px]'
-                              type={'checkbox'}
+                              type='checkbox'
                               checked={medicine.isChecked}
                               onChange={() => handleCheckBoxChange(index)}
                             />
                           </div>
                           <div className='h-full flex-1 rounded-lg bg-gray-100 p-2'>
-                            <h1
-                              className={
-                                'flex h-full w-full items-center overflow-hidden text-ellipsis whitespace-nowrap text-4xl'
-                              }
-                            >
+                            <h1 className='flex h-full w-full items-center overflow-hidden text-ellipsis whitespace-nowrap text-4xl'>
                               {medicine.name}
                             </h1>
                           </div>
